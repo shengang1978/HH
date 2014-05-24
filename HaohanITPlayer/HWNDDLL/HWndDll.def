@@ -1,0 +1,21 @@
+; HWndDll.def : Declares the module parameters for the DLL.
+
+LIBRARY      "HWndDll"
+DESCRIPTION  'HWndDll Windows Dynamic Link Library'
+
+EXPORTS
+    ; Explicit exports can go here
+	HWnd_Init
+	HWnd_Clear
+	HWnd_GetHWnd
+	HWnd_GetFocus
+	HWnd_SetFocus
+	HWnd_SetSplitMode
+	HWnd_OnUpdateFocus
+	HWnd_SetPaintBG
+	HWnd_GetIndex
+	HWnd_SetSplitMode_WithOrder
+	HWnd_GetVisible
+	HWnd_SetOsdText
+	HWnd_SetOsdTextEx
+	

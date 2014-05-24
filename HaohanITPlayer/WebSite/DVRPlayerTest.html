@@ -1,0 +1,386 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+    <title>无标题文档</title>
+    <link rel="stylesheet" href="./stylesheets/jslider.css" type="text/css" />
+    <link rel="stylesheet" href="./stylesheets/jslider.blue.css" type="text/css" />
+    <link rel="stylesheet" href="./stylesheets/jslider.plastic.css" type="text/css" />
+    <link rel="stylesheet" href="./stylesheets/jslider.round.css" type="text/css" />
+    <link rel="stylesheet" href="./stylesheets/jslider.round.plastic.css" type="text/css" />
+    <!--<script type="text/javascript" src="./javascripts/FloatFrame.js"></script>-->
+    <script type="text/javascript" src="./javascripts/jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="./javascripts/jquery.dependClass.js"></script>
+    <script type="text/javascript" src="./javascripts/jquery.slider-min.js"></script>
+    <style type="text/css" media="screen">
+        .layout
+        {
+            padding: 100px;
+            font-family: Georgia, serif;
+        }
+        .layout-slider
+        {
+            margin-bottom: 60px;
+            width: 142px;
+        }
+        .layout-slider-settings
+        {
+            font-size: 12px;
+            padding-bottom: 10px;
+        }
+        .layout-slider-settings pre
+        {
+            font-family: Courier;
+        }
+       
+    </style>
+    <script language="javascript" type="text/javascript">
+        var vsDuration = 100//vs录像持续时间
+        var currentTime //得到vs录像播放的当前时间
+        var setCurrentTime //设置vs录像播放时间
+        var ratio //进度条比例
+        var stop = false //停止所有更新
+        var stopCurrentTime //停止每隔1秒计算当前时间
+        var stopRatio //停止每隔1秒计算比例
+        var sliderValue //停止设置进度条
+        function OnSlideMouseUp() {//拉动滑动条，取得滑动条的值
+            var sliderObj = document.getElementById("SliderSingle");
+            setCurrentTime = DVRPlayer.duration * sliderObj.value / 100;
+            DVRPlayer.currentPosition = setCurrentTime; //设置视频位置
+            stop = false; //开启定时器
+            setSliderValue();
+        }
+
+        function setSliderValue() {
+            //v = 100 * DVRPlayer.currentPosition / DVRPlayer.duration;
+            var v = 90;
+            var divObj = document.getElementById("divObj");
+            divObj.innerHTML = '<input id="SliderSingle" type="slider"  name="price" value="' + v + '"/>';
+            jQuery("#SliderSingle").slider({ from: 0, to: 100, step: 1, round: 0, dimension: "", skin: "round" });
+            sliderValue = setTimeout("setSliderValue()", 500); //每间隔0.5秒钟，设置一次滚动条
+            if (stop) {//停止设置进度条
+                clearTimeout(sliderValue);
+                return;
+            }
+        }
+
+        function mouseDownOperate() { //鼠标按下事件(这个名不能改,在jqury里封装好的)
+            stop = true;//关掉定时器
+            //var sliderObj = document.getElementById("SliderSingle");
+            //alert("sliderObj----------->" + sliderObj.value);
+        }
+
+        function doOperator(type, params) {
+            var span_operatorObj = document.getElementById("span_operator");
+            if (!span_operatorObj) return;
+
+            if (type == 'login') {//登录
+
+                var ret = DVRPlayer.Login(params[0], params[1], params[2], params[3]); //userName, passWord, severIP, severPort
+                alert(ret);
+            } else if (type == 'logout') {//登出
+                DVRPlayer.Logout();
+            }
+            else if (type == 'startMonitor') {//启动监视
+                if (splitWindow.value != null && splitWindow.value > 0) {
+                    if (DVRPlayer.StartMonitor(splitWindow.value)) {
+                    }
+                    for (var index = 0; index < splitWindow.value; ++index) {
+                        var opt = document.createElement('option');
+                        opt.value = index;
+                        opt.text = index;
+                        WndIndex.add(opt)
+                    }
+                }
+                else if (params[0] > 0) {
+                    if (DVRPlayer.StartMonitor(params[0])) {
+                        var opt = document.createElement('option');
+                        opt.value = '1';
+                        opt.text = '1';
+                        WndIndex.add(opt)
+                    }
+                } else {
+                    alert("请输入分割线数！");
+                }
+            }
+            else if (type == 'stopMonitor') {//停止监视
+                DVRPlayer.StopMonitor();
+            }
+            else if (type == 'setWndChannel') {//切换通道
+                if (WndIndex.value != null && WndIndex.value >= 0 && ChannelIndex.value != null && ChannelIndex.value >= 0) {
+                    DVRPlayer.SetWndChannel(WndIndex.value, ChannelIndex.value);
+                }
+                else if (params[0] >= 0 && params[1] >= 0) {
+                    DVRPlayer.SetWndChannel(params[0], params[1]);
+                } else {
+                    alert("========>>>Channel");
+                }
+            }
+            else if (type == 'run') {//播放params[0]
+                //vsDuration = Duration(); // 得到VS录像持续时间
+
+                DVRPlayer.play();
+                //currentTime = ReturnCurrentPosition(); // 得到VS录像当前时间
+                //Ratio(60, 100); //得到滚动条比例
+                setSliderValue();
+                span_operatorObj.innerHTML = '<input name="stop" type="button" value="暂停" onclick="doOperator(\'pause\')"/>';
+            }
+            else if (type == 'pause') {//暂停
+
+                DVRPlayer.pause();
+                span_operatorObj.innerHTML = '<input name="play" type="button" value="播放" onclick="doOperator(\'run\')"/>';
+            }
+            else if (type == 'stop') {//停止
+                DVRPlayer.stop();
+                stop = false;
+                span_operatorObj.innerHTML = '<input name="play" type="button" value="播放" onclick="doOperator(\'run\')"/>';
+            }
+            else if (type == 'fastForward') {//快进
+
+                DVRPlayer.fastForward();
+            }
+            else if (type == 'fastReverse') {//快退
+
+                DVRPlayer.fastReverse();
+            }
+            else if (type == 'capPic') {//截图
+                var strPath;
+                DVRPlayer.SetCapturePath("D:");
+                strPath = DVRPlayer.CapPic();
+                alert("strPath------>" + strPath);
+            }
+            else if (type == 'duration') {//vs录像持续时间
+                //vsDuration = DVRPlayer.duration();
+                //alert("time------>" + vsDuration);
+            }
+        }
+
+        function OnOpenFile(strFile) {
+            if (strFile != null) {
+                var span_operatorObj = document.getElementById("span_operator");
+                //DVRPlayer.OpenFile("http://192.168.99.34:8080/cm/alertNormalDir/alertVideo/CH2_Alert[20110621115951-20110621115959].vs;D:\\vsFiles\\CH0_Alert[20110719184809-20110719184817].vs;D:\\vsFiles\\CH0_Alert[20110719184809-20110719184817].vs");
+                DVRPlayer.OpenFile(strFile);
+                //DVRPlayer.StartPlayback('1308643210', '1308644110', '1');
+                //var a = new Array("D:\\Assets\\Bug_Slow.vs", "D:\\Assets\\Bug2.vs", "D:\\Assets\\Alert[20110420215445-20110420215455].vs");
+                //DVRPlayer.OpenFile(a[0]);
+                //for(i = 0; i < a.length; i++) {
+                   // DVRPlayer.AddFileToPlayList(a[i]);
+                //}
+                
+                setSliderValue();
+                
+                span_operatorObj.innerHTML = '<input name="stop" type="button" value="暂停" onclick="doOperator(\'pause\')"/>';
+            }
+        }
+
+        function OnPlayNext() {
+            DVRPlayer.OpenFile("D:\\vsFiles\\CH0_Alert[20110722102515-20110722102523].vs");
+            //DVRPlayer.PlayNextFile();
+        }
+
+        function OnMouseDoubleClick() {
+            DVRPlayer.fullScreen = !DVRPlayer.fullScreen;
+        }
+
+        function hideToolArea(displayAttr) {
+            var divToolObj = document.getElementById("div_tool");
+            if (divToolObj) {
+                divToolObj.style.display = displayAttr;
+            }
+        }
+
+        function Ratio(currentTime, duration) {//得到百分比
+            ratio = (currentTime / duration) * 100;
+            stopRatio = setTimeout("Ratio(" + currentTime + ", " + duration + ")", 1000); //每隔1秒钟更新一次当前比例
+            if (stop) {//停止更新
+                clearTimeout(stopRatio);
+                return;
+            }
+        }
+
+    </script>
+    <style type="text/css">
+        #DVRPlayer
+        {
+            height: 449px;
+            width: 601px;
+        }
+        #form2
+        {
+            width: 167px;
+        }
+        #mediaFile
+        {
+            width: 248px;
+        }
+        .style1
+        {
+            width: 600px;
+            height: 450px;
+        }
+        .style4
+        {
+            width: 169px;
+        }
+        .style5
+        {
+            width: 75px;
+        }
+        .style8
+        {
+            width: 132px;
+        }
+        .style9
+        {
+            width: 98px;
+        }
+        .style10
+        {
+            width: 67px;
+        }
+        #Text1
+        {
+            width: 168px;
+        }
+    </style>
+</head>
+<body>
+    <!--    <div id="divFloat" style=" position:absolute; left:200px; top:300px; width: 765px; height:60px; background-color:Red; z-index: 5000">
+    </div>-->
+    <table border="0" cellspacing="0" cellpadding="0" width="100%">
+        <td class="style1">
+        <div style="z-index:1;position:absolute;width:600;height:450; left:0;top:0;"> 
+                 <object id="DVRPlayer" classid="CLSID:023D5C5C-2FFE-4054-8CE9-45C492778C52" width="600" height="450" onmouseover="hideToolArea('')"></object>
+        </div>
+
+        <div style="z-index:10;position:absolute;width:100;height:18; left:400;top:400;">
+	        <iframe style="position:absolute;z-index:-1;width:100%;height:100%;top:0;left:0;scrolling:no;" frameborder="0" src="about:blank"></iframe>   
+	        <div id="div_tool" style="background-color:#cccccc;display:none;"><input type="button" name="btn" value="快进"/> </div>  
+        </div> 
+        </td>
+        <td class="style4">
+            <br />
+            <br />
+            <div class="layout-slider" onmouseup="OnSlideMouseUp()" id="divObj">
+                <input id="SliderSingle" type="slider"  name="price" value="0"/>
+	  	            <script type="text/javascript" charset="utf-8">
+	  	                jQuery("#SliderSingle").slider({ from: 0, to: 100, step: 1, round: 0, dimension: "", skin: "round" });
+                </script>
+            </div>
+            <input type="submit" name="btn" value="setDefValue" onclick="setSliderValue()"/>
+            <br />
+            <table border="0" style="width: 271px; margin-top: 0px">
+                <tr>
+                    <td width="42">
+                        <input name="fastForward" type="button" value="快进" onclick="doOperator('fastForward')" />
+                    </td>
+                    <td width="69">
+                        <span id="span_operator">
+                            <input name="play" type="button" value="播放" onclick="doOperator('run', null)" /></span>
+                    </td>
+                    <td width="42">
+                        <input name="fastReverse" type="button" value="快退" onclick="doOperator('fastReverse')" />
+                    </td>
+                    <td width="42">
+                        <input name="stop" type="button" value="停止" onclick="doOperator('stop', null)" />
+                    </td>
+                    <td width="49">
+                        &nbsp;
+                    </td>
+                </tr>
+            </table>
+            <br />
+            <br />
+            <table width="390" border="0" style="width: 342px">
+                <tr>
+                    <td width="67" class="style10">
+                        <a href="javascript:doOperator('login',['super','uptfp','192.168.99.160',20000])">登录</a>
+                    </td>
+                    <td width="98" class="style9">
+                        <a href="javascript:doOperator('startMonitor', [1])">启动监视</a>
+                    </td>
+                    <td width="75" class="style5">
+                        <a href="javascript:doOperator('setWndChannel', [0,4])">切换通道</a>
+                    </td>
+                    <td width="132" class="style8">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="style10">
+                        <a href="javascript:doOperator('logout',null)">登出</a>
+                    </td>
+                    <td class="style9">
+                        <a href="javascript:doOperator('stopMonitor',null)">停止监控</a>
+                    </td>
+                    <td class="style5">
+                        &nbsp;
+                    </td>
+                    <td class="style8">
+                        <a href="javascript:doOperator('setWndChannel', [0,4])">服务器回放</a>
+                    </td>
+                </tr>
+            </table>
+            <br />
+            <br />
+            <br />
+            <input type="submit" name="capPic" value="截图" onclick="doOperator('capPic', null)" /><td>
+            <input type="submit" name="duration" value="本地文件时间" onclick="doOperator('duration', null)" />
+            
+                <p>
+                    &nbsp;</p>
+                <p style="width: 164px">
+                    <span class="style4">窗口分割数</span> <span class="style4">
+                        <select name="splitWindow" id="splitWindow" style="width: 53px">
+                            <option value="1">1</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="6">6</option>
+                            <option value="9">9</option>
+                            <option value="16">16</option>
+                            <option value="25">25</option>
+                            <option value="36">36</option>
+                        </select>
+                    </span>
+                </p>
+                <p style="width: 171px">
+                    窗口
+                    <select name="WndIndex" id="WndIndex" style="width: 55px">
+                    </select>
+                    <br />
+                    <br />
+                    通道号
+                    <select name="ChannelIndex" id="ChannelIndex" style="width: 53px">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                    </select>
+                </p>
+            </td>
+    </table>
+    <div style="width: 248px;" align="left">
+        <input id="mediaFile" type="file" onchange="OnOpenFile(this.value)" />
+    </div>
+    <script type="text/javascript" charset="utf-8">
+        jQuery("#SliderSingle").slider({ from: 0, to: 100, step: 1, round: 0, dimension: '', skin: "round" });
+    </script>
+    <input id="btnPlayNext" type="button" value="PlayNext" onclick="OnPlayNext()" /><br />
+    <br />
+    <br />
+    <br />
+    <script language="javascript" type="text/javascript" for="DVRPlayer" event="DoubleClick(nButton, nShiftState, fx, fy)">
+        OnMouseDoubleClick();
+    </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+HKCR
+{
+	DVRMVPlayer.DVRMVPlayerCtrl.1 = s 'DVRMVPlayerCtrl Class'
+	{
+		CLSID = s '{023D5C5C-2FFE-4054-8CE9-45C492778C52}'
+	}
+	DVRMVPlayer.DVRMVPlayerCtrl = s 'DVRMVPlayerCtrl Class'
+	{
+		CLSID = s '{023D5C5C-2FFE-4054-8CE9-45C492778C52}'
+		CurVer = s 'DVRMVPlayer.DVRMVPlayerCtrl.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {023D5C5C-2FFE-4054-8CE9-45C492778C52} = s 'DVRMVPlayerCtrl Class'
+		{
+			ProgID = s 'DVRMVPlayer.DVRMVPlayerCtrl.1'
+			VersionIndependentProgID = s 'DVRMVPlayer.DVRMVPlayerCtrl'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			val AppID = s '%APPID%'
+			ForceRemove 'Control'
+			ForceRemove 'ToolboxBitmap32' = s '%MODULE%, 102'
+			'MiscStatus' = s '0'
+			{
+			    '1' = s '%OLEMISC%'
+			}
+			'TypeLib' = s '{84EFD30E-AE3F-4E2E-BF00-681BF75C9A34}'
+			'Version' = s '1.0'
+		}
+	}
+}

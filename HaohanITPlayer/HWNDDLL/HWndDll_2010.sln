@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWndDll_2010", "HWndDll_2010.vcxproj", "{A3AE6DD9-AA0F-9251-607C-45156E13A78D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A3AE6DD9-AA0F-9251-607C-45156E13A78D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A3AE6DD9-AA0F-9251-607C-45156E13A78D}.Debug|Win32.Build.0 = Debug|Win32
+		{A3AE6DD9-AA0F-9251-607C-45156E13A78D}.Release|Win32.ActiveCfg = Release|Win32
+		{A3AE6DD9-AA0F-9251-607C-45156E13A78D}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

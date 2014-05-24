@@ -1,0 +1,126 @@
+[<a href="#" onclick="play()">Play</a>]  [<a href="#" onclick="pause()">Pause</a>]  [<a href="#" onclick="stop()">Stop</a>] ...... [<a href="#" onclick="mute()">Mute</a>]  [<a href="#" onclick="unmute()">Unmute</a>]  [<a href="#" onclick="checkMethod()">CheckMethod</a>] <br>
+
+<object id="IMVPlayer" height="100%" width="100%" tabindex="-1" classid="CLSID:BD6675DF-7416-4C7B-B99F-93B5A7451EB8" viewastext standby="Loading RoxioNow Streaming Player...">
+<param name="URL" value="H:\\1.mp4">
+<param name="uiMode" value="none">
+<param name="mute" value="0">
+</object>
+
+<script for="IMVPlayer" event="KeyPress(thiskey)">dokeys(thiskey);</script>
+<script for="IMVPlayer" event="DoubleClick">dokeys(70);</script>
+<script for="IMVPlayer" event="KeyDown(nKeyCode,nShiftState)">if ((nKeyCode == 179) || (nKeyCode == 178)){dokeys(nKeyCode)}else{playerkeydown(nKeyCode,nShiftState);}
+
+// VK_MEDIA_STOP 	0xB2	Stop Media key
+// VK_MEDIA_PLAY_PAUSE	0xB3	Play/Pause Media key
+
+</script>
+
+<script language="javascript">
+
+function checkMethod()
+{
+    alert('currentPosition:');
+    alert(document.IMVPlayer.controls.currentPosition);
+    alert('currentPositionString:');
+    alert(document.IMVPlayer.controls.currentPositionString);
+    alert('imageSourceWidth:');
+    alert(document.IMVPlayer.currentMedia.imageSourceWidth);
+    alert('imageSourceHeight:');
+    alert(document.IMVPlayer.currentMedia.imageSourceHeight);
+    alert('durationString:');
+    alert(document.IMVPlayer.currentMedia.durationString);
+    alert('duration:');
+    alert(document.IMVPlayer.currentMedia.duration);
+    alert('height:');
+    alert(document.IMVPlayer.height);
+    alert('playState:');
+    alert(document.IMVPlayer.playState);
+    alert('URL:');
+    alert(document.IMVPlayer.URL);
+    alert('fullScreen:');
+    alert(document.IMVPlayer.fullScreen);
+    alert('uiMode:');
+    alert(document.IMVPlayer.uiMode);
+    alert('status:');
+    alert(document.IMVPlayer.status);
+    alert('versionInfo:');
+    alert(document.IMVPlayer.versionInfo);
+}
+
+function play() 
+{
+if (document.IMVPlayer.controls.isAvailable('Play'))
+    document.IMVPlayer.controls.play();
+}
+
+function pause() 
+{
+if (document.IMVPlayer.controls.isAvailable('Pause'))
+    document.IMVPlayer.controls.pause();
+}
+
+function stop() 
+{
+if (document.IMVPlayer.controls.isAvailable('Stop'))
+    document.IMVPlayer.controls.stop();
+}
+
+function mute() 
+{
+    document.IMVPlayer.settings.mute = 1;
+}
+
+function unmute() 
+{
+    document.IMVPlayer.settings.mute = 0;
+}
+
+
+function playerkeydown(thiskey,thisshift) 
+{
+	if (document.IMVPlayer.fullScreen == true && thiskey == 27) 
+	{// if wmp event keydown=escape, toggle full-screen
+		dokeys(70);
+	}
+	return false;
+}
+
+function dokeys(thiskey) {
+	thiskey = parseInt(thiskey,10);
+
+	if (thiskey==80||thiskey==112||thiskey==179) {		// Play: 'p', 'P', VK_MEDIA_PLAY_PAUSE
+		try{
+			document.IMVPlayer.controls.play();
+		} catch(e) {
+			document.IMVPlayer.controls.pause();
+		}
+	}
+
+	else if (thiskey==88||thiskey==120||thiskey==178) {		// Stop: 'x', 'X', VK_MEDIA_STOP
+		document.IMVPlayer.controls.stop();
+	}
+
+	else if (thiskey==77||thiskey==109) {		// mute: 'm', 'M'
+		if (document.IMVPlayer.settings.mute == true) {
+			document.IMVPlayer.settings.mute = false;
+		} else {
+			document.IMVPlayer.settings.mute = true;
+		}
+	}
+
+	else if (thiskey==70||thiskey==102) {				// full screen: 'f', 'F'
+		if (document.IMVPlayer.fullScreen == true) {
+			document.IMVPlayer.fullScreen = false;
+		} else {
+			document.IMVPlayer.fullScreen = true;
+		}
+	}
+
+	else {
+		// alert('P key to Play/Pause; \nX key to Stop; \nM key to Mute/unMute; \nF key to Full screen;');
+	}
+
+	return false;
+}
+
+</script>

@@ -1,0 +1,26 @@
+HKCR
+{
+	DVRMVPlayerLib.DVRMVPlayerProp.1 = s 'DVRMVPlayerProp Class'
+	{
+		CLSID = s '{D9D9CCA7-2BE1-4E1D-8D88-E7F4CBB3E34B}'
+	}
+	DVRMVPlayerLib.DVRMVPlayerProp = s 'DVRMVPlayerProp Class'
+	{
+		CLSID = s '{D9D9CCA7-2BE1-4E1D-8D88-E7F4CBB3E34B}'
+		CurVer = s 'DVRMVPlayerLib.DVRMVPlayerProp.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {D9D9CCA7-2BE1-4E1D-8D88-E7F4CBB3E34B} = s 'DVRMVPlayerProp Class'
+		{
+			ProgID = s 'DVRMVPlayerLib.DVRMVPlayerProp.1'
+			VersionIndependentProgID = s 'DVRMVPlayerLib.DVRMVPlayerProp'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{84EFD30E-AE3F-4E2E-BF00-681BF75C9A34}'
+		}
+	}
+}

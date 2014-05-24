@@ -1,0 +1,10 @@
+/I "..\..\..\..\Common\SystemHeaders"
+/I "..\..\..\..\Common\SysUtils"
+
+/I "..\..\..\..\HostEncoders\Decoders\Common"
+/I "..\..\..\..\HostEncoders\Decoders\Include"
+
+/I "..\..\..\..\DirectShow\Common"
+
+/I "..\..\..\..\ThirdParty\Windows\Win7SDK\Include"
+/I "..\..\..\..\ThirdParty\Windows\WinDDK\inc"

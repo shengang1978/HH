@@ -1,0 +1,20 @@
+/I ".\public"
+/I "..\..\ThirdParty\Windows\CPSDK41"
+/I "..\..\ThirdParty\Windows\VistaSDK\Include"
+/I "..\..\ThirdParty\Windows\Intel\MediaVault"
+
+/I "..\..\Common\SystemHeaders"
+/I "..\Common"
+/I "..\..\HostEncoders\Decoders\IMVLicenseMgr\private"
+/I "..\..\HostEncoders\Decoders\IMVLicenseMgr\private\tinyxml"
+/I "..\..\HostEncoders\Decoders\include"
+/I "..\..\HostEncoders\Decoders\uab"
+/I "..\..\HostEncoders\Decoders\SecurityModule\libs\include"
+/I "..\..\ThirdParty\CrossPlatform\Langer\TcClsLib"
+/I "..\..\ThirdParty\CrossPlatform\Langer\TcClsLib\Win32"
+
+/I "..\..\Security\AntiDebug"
+/I "..\..\Security\DebugPrevention"
+
+/I ".\private\EVRPresenter"
+/I "..\OutputProtection"

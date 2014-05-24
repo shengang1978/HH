@@ -1,0 +1,5 @@
+// Sync_Locks.cpp: implementation of the CSync_Locks class.
+//
+//////////////////////////////////////////////////////////////////////
+#include "stdafx.h"
+#include "Sync_Locks.h"

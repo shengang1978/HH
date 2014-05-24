@@ -1,0 +1,310 @@
+//*****************************************************************************
+//
+// hh Playback Engine On Intel Media Vault Platform 
+// Copyright (C) Haohanit.  All Rights Reserved.
+//
+// FileName:            DVRMVPlayer.idl
+//
+// Abstract:            Interface definitions for all public interfaces
+//
+//*****************************************************************************
+cpp_quote( "//=========================================================================" )
+cpp_quote( "//" )
+cpp_quote( "// hh Playback Engine On Intel Media Vault Platform " )
+cpp_quote( "// Copyright (C) Haohanit.  All Rights Reserved." )
+cpp_quote( "//" )
+cpp_quote( "//=========================================================================" )
+
+#include "olectl.h"
+#include "DVRMVPlayerIds.h"
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+//////////////////////////////////////////////////////////////////////
+//            PUBLIC ENUM TYPES 
+//////////////////////////////////////////////////////////////////////
+typedef
+[
+    helpstring( "IMV result code" ),
+    public
+]
+enum IMVResult // wmpos
+{
+    [ helpstring( "Success" ) ]                                     IMV_SUCCESSFUL,
+    [ helpstring( "HDCP cannot be enabled" ) ]                      IMV_FAIL_HDCP = -1,
+    [ helpstring( "The moive has no license" ) ]                    IMV_FAIL_LICENSE = -2, 
+	[ helpstring( "File format is not supported" ) ]                IMV_FAIL_INVALIDATE_FILE = -3
+} IMVResult;
+
+
+//////////////////////////////////////////////////////////////////////
+//                   PUBLIC INTERFACES
+//////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////
+//          Control Interfaces
+//////////////////////////////////////////////////////////////////////
+[
+	object,
+	uuid(583C0343-05D2-4c3a-9282-FC14C8396E4E),
+	dual,
+	nonextensible,
+	helpstring("IDVRMVControls Interface"),
+	pointer_default(unique)
+]
+interface IDVRMVControls : IDispatch{
+	[id(DISPID_IMVCONTROLS_PLAY), helpstring("Begins playing media")] 
+		HRESULT play(void);
+	[id(DISPID_IMVCONTROLS_STOP), helpstring("Stops play of media")] 
+		HRESULT stop(void);
+	[id(DISPID_IMVCONTROLS_PAUSE), helpstring("Pauses play of media")] 
+		HRESULT pause(void);
+	[id(DISPID_IMVCONTROLS_FASTFORWARD), helpstring("Fast play of media in forward direction")] 
+		HRESULT fastForward(void);
+	[id(DISPID_IMVCONTROLS_FASTREVERSE), helpstring("Fast play of media in reverse direction")] 
+		HRESULT fastReverse(void);
+	[propget, id(DISPID_IMVCONTROLS_CURRENTPOSITION), helpstring("Returns the current position in media")] 
+		HRESULT currentPosition([out, retval] DOUBLE* pdCurrentPosition);
+	[propput, id(DISPID_IMVCONTROLS_CURRENTPOSITION), helpstring("sets the current position in media")] 
+		HRESULT currentPosition([in] DOUBLE dCurrentPosition);
+	[propget, id(DISPID_IMVCONTROLS_CURRENTPOSITIONSTRING), helpstring("Returns the current position in media as a string")] 
+		HRESULT currentPositionString([out, retval] BSTR* pbstrCurrentPosition);
+	[propget, id(DISPID_IMVCONTROLS_ISAVAILABLE), helpstring("Returns whether or not the specified media functionality is available")] 
+		HRESULT isAvailable([in] BSTR bstrItem, [out, retval] VARIANT_BOOL* pIsAvailable);
+};
+
+
+//////////////////////////////////////////////////////////////////////
+//          Settings Interfaces
+//////////////////////////////////////////////////////////////////////
+[
+	object,
+	uuid(7D45535F-3ECE-4bd7-A868-C1B2A8128A76),
+	dual,
+	nonextensible,
+	helpstring("IDVRMVSettings Interface"),
+	pointer_default(unique)
+]
+interface IDVRMVSettings : IDispatch{
+	[propget, id(DISPID_IMVSETTINGS_MUTE), helpstring("Returns whether audio should be muted")] 
+		HRESULT mute([out, retval] VARIANT_BOOL* pfMute);
+	[propput, id(DISPID_IMVSETTINGS_MUTE), helpstring("Sets audio mute")] 
+		HRESULT mute([in] VARIANT_BOOL fMute);
+	[propget, id(DISPID_IMVSETTINGS_VOLUME), helpstring("Returns current audio volume")] 
+		HRESULT volume([out, retval] LONG* plVolume);
+	[propput, id(DISPID_IMVSETTINGS_VOLUME), helpstring("Sets audio volume")] 
+		HRESULT volume([in] LONG lVolume);
+};
+
+
+//////////////////////////////////////////////////////////////////////
+//          Media Interfaces
+//////////////////////////////////////////////////////////////////////
+[
+	object,
+	uuid(842D4D89-DB49-43d9-8AA6-44D4483FBFC3),
+	dual,
+	nonextensible,
+	helpstring("IDVRMVMedia Interface"),
+	pointer_default(unique)
+]
+interface IDVRMVMedia : IDispatch{
+	[propget, id(DISPID_IMVMEDIA_IMAGESOURCEWIDTH), helpstring("Returns the original width of the source images")] 
+		HRESULT imageSourceWidth([out, retval] LONG* pWidth);
+	[propget, id(DISPID_IMVMEDIA_IMAGESOURCEHEIGHT), helpstring("Returns the original height of the source images")] 
+		HRESULT imageSourceHeight([out, retval] LONG* pHeight);
+	[propget, id(DISPID_IMVMEDIA_DURATION), helpstring("Returns duration of current media")] 
+		HRESULT duration([out, retval] DOUBLE* pDuration);
+	[propget, id(DISPID_IMVMEDIA_DURATIONSTRING), helpstring("Returns duration of current media as a string")] 
+		HRESULT durationString([out, retval] BSTR* pbstrDuration);
+};
+
+
+//////////////////////////////////////////////////////////////////////
+//          Player Interfaces
+//////////////////////////////////////////////////////////////////////
+[
+	object,
+	uuid(1EF48C0B-67B9-489D-92F4-0C1453F613E8),
+	dual,
+	nonextensible,
+	helpstring("IDVRMVPlayer Interface"),
+	pointer_default(unique)
+]
+interface IDVRMVPlayer : IDispatch{
+	[propget, id(DISPID_IMVPLAYER_URL), helpstring("Returns the URL")] 
+		HRESULT URL([out, retval] BSTR* pbstrURL);
+	[propput, id(DISPID_IMVPLAYER_URL), helpstring("Sets the URL")] 
+		HRESULT URL([in] BSTR bstrURL);
+	[propget, id(DISPID_IMVPLAYER_FULLSCREEN), helpstring("Returns a boolean value specifying whether or not the control is in full screen mode")] 
+		HRESULT fullScreen([out, retval] VARIANT_BOOL* pbFullScreen);
+	[propput, id(DISPID_IMVPLAYER_FULLSCREEN), helpstring("Sets a boolean value specifying whether or not the control is in full screen mode")] 
+		HRESULT fullScreen([in] VARIANT_BOOL bFullScreen);
+	[propget, id(DISPID_IMVPLAYER_UIMODE), helpstring("Returns the currently selected ui mode")] 
+		HRESULT uiMode([out, retval] BSTR* pbstrMode);
+	[propput, id(DISPID_IMVPLAYER_UIMODE), helpstring("Specifies the ui mode to select")] 
+		HRESULT uiMode([in] BSTR bstrMode);
+	[propget, id(DISPID_IMVPLAYER_STATUS), helpstring("Returns status string")] 
+		HRESULT status([out, retval] BSTR* pbstrStatus);
+	[propget, id(DISPID_IMVPLAYER_PLAYSTATE), helpstring("Returns the play state of the player")] 
+		HRESULT playState([out, retval] LONG* plState);
+	[propget, id(DISPID_IMVPLAYER_VERSIONINFO), helpstring("Returns the version information for the player")] 
+		HRESULT versionInfo([out, retval] BSTR* pbstrVersionInfo);
+	[id(DISPID_IMVPLAYER_CLOSE), helpstring("Closes the media")] 
+		HRESULT close(void);
+
+	[propget, id(DISPID_IMVPLAYER_CONTROLS), helpstring("Returns the control handler")] 
+		HRESULT controls([out, retval] IDVRMVControls** ppControl);
+	[id(DISPID_IMVCONTROLS_PLAY), helpstring("Begins playing media")] 
+		HRESULT play(void);
+	[id(DISPID_IMVCONTROLS_STOP), helpstring("Stops play of media")] 
+		HRESULT stop(void);
+	[id(DISPID_IMVCONTROLS_PAUSE), helpstring("Pauses play of media")] 
+		HRESULT pause(void);
+	[id(DISPID_IMVCONTROLS_FASTFORWARD), helpstring("Fast play of media in forward direction")] 
+		HRESULT fastForward(void);
+	[id(DISPID_IMVCONTROLS_FASTREVERSE), helpstring("Fast play of media in reverse direction")] 
+		HRESULT fastReverse(void);
+	[propget, id(DISPID_IMVCONTROLS_CURRENTPOSITION), helpstring("Returns the current position in media")] 
+		HRESULT currentPosition([out, retval] DOUBLE* pdCurrentPosition);
+	[propput, id(DISPID_IMVCONTROLS_CURRENTPOSITION), helpstring("sets the current position in media")] 
+		HRESULT currentPosition([in] DOUBLE dCurrentPosition);
+	[propget, id(DISPID_IMVCONTROLS_CURRENTPOSITIONSTRING), helpstring("Returns the current position in media as a string")] 
+		HRESULT currentPositionString([out, retval] BSTR* pbstrCurrentPosition);
+	[propget, id(DISPID_IMVCONTROLS_ISAVAILABLE), helpstring("Returns whether or not the specified media functionality is available")] 
+		HRESULT isAvailable([in] BSTR bstrItem, [out, retval] VARIANT_BOOL* pIsAvailable);
+
+	[propget, id(DISPID_IMVPLAYER_SETTINGS), helpstring("Returns the settings handler")] 
+		HRESULT settings([out, retval] IDVRMVSettings** ppSettings);
+	[propget, id(DISPID_IMVSETTINGS_MUTE), helpstring("Returns whether audio should be muted")] 
+		HRESULT mute([out, retval] VARIANT_BOOL* pfMute);
+	[propput, id(DISPID_IMVSETTINGS_MUTE), helpstring("Sets audio mute")] 
+		HRESULT mute([in] VARIANT_BOOL fMute);
+	[propget, id(DISPID_IMVSETTINGS_VOLUME), helpstring("Returns current audio volume")] 
+		HRESULT volume([out, retval] LONG* plVolume);
+	[propput, id(DISPID_IMVSETTINGS_VOLUME), helpstring("Sets audio volume")] 
+		HRESULT volume([in] LONG lVolume);
+
+	[propget, id(DISPID_IMVPLAYER_CURRENTMEDIA), helpstring("Returns the current media object")] 
+		HRESULT currentMedia([out, retval] IDVRMVMedia** ppMedia);
+	[propget, id(DISPID_IMVMEDIA_IMAGESOURCEWIDTH), helpstring("Returns the original width of the source images")] 
+		HRESULT imageSourceWidth([out, retval] LONG* pWidth);
+	[propget, id(DISPID_IMVMEDIA_IMAGESOURCEHEIGHT), helpstring("Returns the original height of the source images")] 
+		HRESULT imageSourceHeight([out, retval] LONG* pHeight);
+	[propget, id(DISPID_IMVMEDIA_DURATION), helpstring("Returns duration of current media")] 
+		HRESULT duration([out, retval] DOUBLE* pDuration);
+	[propget, id(DISPID_IMVMEDIA_DURATIONSTRING), helpstring("Returns duration of current media as a string")] 
+		HRESULT durationString([out, retval] BSTR* pbstrDuration);
+	//DVR Interfaces
+	[id(DISPID_DVRPLAYER_OPENFILE), helpstring("Open and play the Media file")] 
+		HRESULT OpenFile([in] BSTR bstrMediaFile);
+	[id(DISPID_DVRPLAYER_LOGIN), helpstring("Login")] 
+		HRESULT Login([in] BSTR bstrUsername, [in] BSTR bstrPassword, [in] BSTR bstrIP, [in] LONG lPort, [out, retval] VARIANT_BOOL* pRet);
+	[id(DISPID_DVRPLAYER_LOGOUT), helpstring("Logout")] 
+		HRESULT Logout();
+	[id(DISPID_DVRPLAYER_SETMEDIASERVER), helpstring("SetMediaServer")] 
+		HRESULT SetMediaServer([in] BSTR bstrMediaServerIP, [in] LONG lPort);
+	[id(DISPID_DVRPLAYER_GETMEDIASERVER), helpstring("GetMediaServer")] 
+		HRESULT GetMediaServer([out] BSTR* bstrMediaServerIP, [out] LONG* lPort);
+	[id(DISPID_DVRPLAYER_STARTMONITOR), helpstring("Start monitor")] 
+		HRESULT StartMonitor([in] LONG lWndNum);
+	[id(DISPID_DVRPLAYER_STOPMONITOR), helpstring("Stop monitor")] 
+		HRESULT StopMonitor();
+	[id(DISPID_DVRPLAYER_CAPPIC), helpstring("Capture the picture")] 
+		HRESULT CapPic([out, retval] BSTR* pCapPicPath);
+	[id(DISPID_DVRPLAYER_GETCAPTUREPATH), helpstring("Get the capture folder")] 
+		HRESULT GetCapturePath([out, retval] BSTR* pbstrCapFolder);
+	[id(DISPID_DVRPLAYER_SETCAPTUREPATH), helpstring("Set the capture folder")] 
+		HRESULT SetCapturePath([in] BSTR bstrCapFolder);
+	[id(DISPID_DVRPLAYER_SHOWMETADATA), helpstring("show/hide metadata")] 
+		HRESULT ShowMetaData([in] VARIANT_BOOL bShow);
+	[id(DISPID_DVRPLAYER_SETWNDCHANNEL), helpstring("Set Wnd Channel")] 
+		HRESULT SetWndChannel([in] LONG lWndIndex, [in] LONG lChannelIndex);
+	[id(DISPID_DVRPLAYER_GET_FULLSCREEN), helpstring("Get Full Screen")] 
+		HRESULT GetFullScreen([out, retval] VARIANT_BOOL *pbFullScreen);
+	[id(DISPID_DVRPLAYER_SET_FULLSCREEN), helpstring("Set Full Screen")] 
+		HRESULT SetFullScreen([in] VARIANT_BOOL bFullScreen);
+	[id(DISPID_DVRPLAYER_AddPlayFile), helpstring("Add to play list")] 
+		HRESULT AddFileToPlayList([in] BSTR bstrFile);
+	[id(DISPID_DVRPLAYER_ClosePlayFile), helpstring("Close Play Files")] 
+		HRESULT ClosePlayList();
+	[id(DISPID_DVRPLAYER_PlayNextFile), helpstring("Play Next File in play list")] 
+		HRESULT PlayNextFile();
+	[id(DISPID_DVRPLAYER_StartPlayback), helpstring("StartPlayback")] 
+		HRESULT StartPlayback([in] LONGLONG lStartTime, [in] LONGLONG lEndTime, [in] LONG lChannel);
+	[id(DISPID_DVRPLAYER_StopPlayback), helpstring("StartPlayback")] 
+		HRESULT StopPlayback();
+	[id(DISPID_DVRPLAYER_GET_DURATION), helpstring("Get Duration")] 
+		HRESULT GetDuration([out, retval] DOUBLE* pDuration);
+	[id(DISPID_DVRPLAYER_GET_CURRENT_POSITION), helpstring("Get Current Position")] 
+		HRESULT GetCurrentPosition([out, retval] DOUBLE* pdCurrentPosition);
+	[id(DISPID_DVRPLAYER_GET_DURATION_STRING), helpstring("Get Duration String")] 
+		HRESULT GetDurationString([out, retval] BSTR* pbstrDuration);
+	[id(DISPID_DVRPLAYER_GET_CURRENT_POSITION_STRING), helpstring("Get Current Position String")] 
+		HRESULT GetCurrentPositionString([out, retval] BSTR* pbstrCurrentPosition);
+	[id(DISPID_DVRPLAYER_SET_POSITION), helpstring("Set File Pointer")] 
+		HRESULT SetPosition([in] float position);
+};
+
+[
+	uuid(84EFD30E-AE3F-4E2E-BF00-681BF75C9A34),
+	version(1.0),
+	helpstring("DVRMVPlayer 1.0 Type Library")
+]
+library DVRMVPlayerLib
+{
+	importlib("stdole2.tlb");
+
+	//////////////////////////////////////////////////////////////////////
+    //  Events
+    //////////////////////////////////////////////////////////////////////
+	[
+		uuid(3492600D-3F55-4EDE-9901-F767D18C3497),
+		helpstring("_IDVRMVPlayerCtrlEvents Interface")
+	]
+	dispinterface _IDVRMVPlayerCtrlEvents
+	{
+		properties:
+		methods:
+		[ id( DISPID_IMVPLAYERCTRLEVENTS_DOUBLECLICK ), helpstring( "Occurs when a user double-clicks the mouse" ) ]
+            void DoubleClick( [in] short nButton, [in] short nShiftState, [in] long fX, [in] long fY );
+        [ id( DISPID_IMVPLAYERCTRLEVENTS_KEYDOWN ), helpstring( "Occurs when a key is pressed" ) ]
+            void KeyDown( [in] short nKeyCode, [in] short nShiftState );
+        [ id( DISPID_IMVPLAYERCTRLEVENTS_KEYPRESS ), helpstring( "Occurs when a key is pressed and released" ) ]
+            void KeyPress( [in] short nKeyAscii );
+        [ id( DISPID_IMVPLAYERCTRLEVENTS_HDCPERROR ), helpstring( "Sent when the control has an HDCP error condition" ) ]
+            void HDCPError();
+	};
+
+	//////////////////////////////////////////////////////////////////////
+    //      ActiveX Control Class
+    //////////////////////////////////////////////////////////////////////
+	[
+		uuid(023D5C5C-2FFE-4054-8CE9-45C492778C52),
+		control,
+		helpstring("hh IMV Player ActiveX Control")
+	]
+	coclass DVRMVPlayerCtrl
+	{
+		[default] interface IDVRMVPlayer;
+		interface IDVRMVControls;
+		interface IDVRMVSettings;
+		interface IDVRMVMedia;
+		[default, source] dispinterface _IDVRMVPlayerCtrlEvents;
+	};
+
+
+	//////////////////////////////////////////////////////////////////////
+    //      Property Pages
+    //////////////////////////////////////////////////////////////////////
+	[
+		uuid(D9D9CCA7-2BE1-4E1D-8D88-E7F4CBB3E34B),
+		helpstring("DVRMVPlayerProp Class")
+	]
+	coclass DVRMVPlayerProp
+	{
+		[default] interface IUnknown;
+	};
+};

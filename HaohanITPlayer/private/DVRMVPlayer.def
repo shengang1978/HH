@@ -1,0 +1,9 @@
+; DVRMVPlayer.def : Declares the module parameters.
+
+LIBRARY      "DVRMVPlayer.DLL"
+
+EXPORTS
+	DllCanUnloadNow		PRIVATE
+	DllGetClassObject	PRIVATE
+	DllRegisterServer	PRIVATE
+	DllUnregisterServer	PRIVATE
