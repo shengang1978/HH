@@ -1,0 +1,13 @@
+/I "..\..\Common\SysUtils"
+/I "..\..\Common\SysUtils\Unix"
+
+/I "..\..\Common\DebugUtils"
+/I "..\..\Common\FileSystem"
+/I "..\..\Common\Geometry"
+/I "..\..\Common\Locale"
+/I "..\..\Common\Properties"
+/I "..\..\Common\SonicKey"
+/I "..\..\Common\StringUtils"
+/I "..\..\Common\SystemHeaders"
+/I "..\..\Common\Threads"
+

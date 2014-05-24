@@ -1,0 +1,4 @@
+/I "..\..\Common\Geometry"
+/I "..\..\ThirdParty\Windows\DirectX9\include"
+/I "..\..\ThirdParty\Windows\DirectX9\baseclasses"
+/I "..\..\ThirdParty\CrossPlatform\QuickTime\CIncludes"
