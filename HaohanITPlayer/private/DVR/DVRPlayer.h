@@ -1,5 +1,6 @@
 #pragma once
 
+// Test
 #include "PlayM4.h"
 #include "HCNetSDK.h"
 #include "watermarkinfo.h"
@@ -247,6 +248,7 @@ public:
 		m_bDeflash = bDeflash;
 	}
 	bool  GetPictureSize(LONG* plWidth, LONG* plHeight);
+
 	CString  Cappic();
 	void  SetCapturePicType(CDVRSettings::eCapPicType eType)
 	{
