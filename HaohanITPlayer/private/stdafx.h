@@ -72,3 +72,9 @@ using namespace ATL;
 #ifndef CHECK_RESULT
 #define CHECK_RESULT(hr)	{ if (FAILED(hr)) return hr; }
 #endif	// CHECK_RESULT
+
+#ifdef UNICODE
+#define tstring std::wstring
+#else
+#define tstring std::string
+#endif

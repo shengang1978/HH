@@ -9,9 +9,9 @@
 #include "PlayerMgr.h"
 #include "HWndManager.h"
 #include "Metadata_Types.h"
-#include <gdiplus.h>
 #include "FileStreamParser.h"
 #include <list>
+#include "HHFrameDraw.h"
 
 static UINT	WM_FILE_END			= WM_USER +33;	 // User message. Be posted when the file is end.
 static UINT	WM_ENC_CHANGE		= WM_USER +100;  // User message. Be posted when the image size is changed.
@@ -87,57 +87,6 @@ void CALLBACK EncChange(LONG lPort, LONG dwUser);
 #define HIK_STD_STREAM_TYPE_MPG2_TS		7    	/* TSÁ÷           */
 #define HIK_STD_STREAM_TYPE_MPG2_PS     8       /* PSÁ÷           */
 
-class ScaleFrameMetaDataList
-{
-public:
-	ScaleFrameMetaDataList();
-	~ScaleFrameMetaDataList();
-
-	void GetScaledFrameMetaDataList(HHV::FrameMetaDataList& dstFrame, const HHV::FrameMetaDataList& srcFrame, LONG lWndWidth, LONG lWndHeight);
-	//void GetScaledFrameMetaDataList(int nPort, HHV::FrameMetaDataList& dstFrame, const HHV::FrameMetaDataList& srcFrame, LONG lDstWidth, LONG lDstHeight);
-	static std::string RegionType(const HHV::Attributes& attrs, int index);
-private:
-	static	int g_ScaleIndex;
-	typedef std::map<int, HHV::FrameMetaDataList>	MAP_RRAME;
-	//MAP_RRAME m_mapFrameMetaDataList;
-	//MAP_RRAME m_mapTmpMetaDataList;
-	//std::map<int, LONG>	m_mapDstWidth, m_mapDstHeight;
-
-	HHV::FrameMetaDataList	m_FrameMetaDataList;
-	HHV::FrameMetaDataList	m_TmpMetaDataList;
-	int	GetWorkFrameMetaData(HHV::FrameMetaDataList& frame, LONG& lDstWidth, LONG& lDstHeight);
-
-	LONG	m_lWndWidth, m_lWndHeight;
-	bool	m_bScaling;
-	CCritSec	m_ScaleLock;
-	CCritSec	m_TmpLock;
-	enum	eEvent{eScaleEvent = 0, eExitEvent = 1};
-	HANDLE		m_hEvent[2];
-	HANDLE		m_hThread;
-
-	static unsigned __stdcall ScaleCallBack(void* pParam);
-
-	static void ScaleFrameMetaData(HHV::FrameMetaData& frame, LONG lWndWidth, LONG lWndHeight)
-	{
-		ScaleFrameDisplayData(frame.displayData, lWndWidth, lWndHeight);
-	}
-	static void ScaleAttributes(HHV::FrameMetaData& attributes, HHV::Attributes& attrs, LONG lWndWidth, LONG lWndHeight);
-	static void ScaleFrameDisplayData(HHV::FrameDisplayData& fdd,  LONG lWndWidth, LONG lWndHeight);
-	static void ScaleDisplayObjectMeta(HHV::DisplayObjectMeta& dom, float xScale, float yScale);
-	static void ScalePolyLine(HHV::PolyLine& line, float xScale, float yScale);
-	static void ScaleTextMeta(HHV::TextMeta& txt, float xScale, float yScale);
-	static void ScalePolygonM(HHV::PolygonM& pg, float xScale, float yScale);
-	static void ScaleObjectType(HHV::ObjectType& ot, float xScale, float yScale);
-
-	static std::string ToString(LPCSTR, int num);
-	static std::vector<int> ToArray(const HHV::Attributes& attrs, LPCSTR prefix, int index = -1);
-	static std::string ShapeType(const HHV::Attributes& attrs, int index);
-	
-	static HHV::PolyLine ToPolyLine(const HHV::Attributes& attrs, int index);
-	static HHV::ObjectType ToObjectType(const HHV::Attributes& attrs, int index);
-	static HHV::PolygonM	ToPolygon(const HHV::Attributes& attrs, int index);
-};
-
 class CDVRPlayer
 {
 public:
@@ -172,8 +121,7 @@ public:
 	void  Open(LPCTSTR szFile = NULL);
 	void  OpenVsFile(vector<CString> paths);
 	void  CloseVsFile();
-	BOOL  InitForOpenVsFile();
-	void  DestoryOpenVsFile();
+	
 	void  Close();
 	DWORD GetDuration(){return m_dwMaxFileTime;}	// Get Media File duration: Second
 	void  AddToPlayList(LPCTSTR szFile);
@@ -221,15 +169,6 @@ public:
 	//Setting Interfaces.
 	CDVRSettings&	GetDVRSettings(){
 		return *CDVRSettings::GetInstance();
-	}
-
-	void SetStreamType(BOOL bStream)	//TRUE: Stream; FALSE: File
-	{
-		m_bStreamType = bStream;
-	}
-	BOOL GetStreamType()
-	{
-		return m_bStreamType;
 	}
 
 	bool SetDisplayRegion(HWND hRenderWnd, RECT* rcDisplayRegion);
@@ -300,6 +239,8 @@ private:
 	void  DestoryPlayFile();
 	BOOL  InitForMonitor(bool bMonitor = true);
 	void  DestoryMonitor();
+	BOOL  InitForOpenVsFile();
+	void  DestoryOpenVsFile();
 	void  OpenFile();
 	void  CloseFile();
 	CString  GetPic(PBYTE pImage, DWORD nBufSize);
@@ -313,27 +254,13 @@ private:
 	static void FillRectAndDrawTextMeta(HDC hDC);
 	// Draw the meta data on the screen.
 	static void CALLBACK OnDrawFun(long nPort, HDC hDC, LONG nUser);
-	// Draw Meta Data Functions.
-	static void DrawFrameMetaData(Gdiplus::Graphics& graphics, const HHV::FrameMetaData& frame, const LONG& lWndWidth, const LONG& lWndHeight);
-	// Draw Meta Data Scale
-	static void DrawDisplayObjectMeta(Gdiplus::Graphics& graphics, const HHV::DisplayObjectMeta& dspObj, const LONG& lWndWidth, const LONG& lWndHeight, const LONG& nImgWidth, const LONG& nImgHeight)
-	{
-		DrawObjectType(graphics, dspObj.obj, lWndWidth, lWndHeight, nImgWidth, nImgHeight);
-		DrawPolyLine(graphics, dspObj.track, lWndWidth, lWndHeight, nImgWidth, nImgHeight);
-	}
-	static void inline DrawPolyLine(Gdiplus::Graphics& graphics, const HHV::PolyLine& line, const LONG& lWndWidth, const LONG& lWndHeight, const LONG& nImgWidth, const LONG& nImgHeight);
-	static void inline DrawTextMeta(Gdiplus::Graphics& graphics, const HHV::TextMeta& txt, const LONG& lWndWidth, const LONG& lWndHeight, const LONG& nImgWidth, const LONG& nImgHeight);
-	static void inline DrawPolygon(Gdiplus::Graphics& graphics, const HHV::PolygonM& polygon, const LONG& lWndWidth, const LONG& lWndHeight, const LONG& nImgWidth, const LONG& nImgHeight);
-	static void inline DrawObjectType(Gdiplus::Graphics& graphics, const HHV::ObjectType& obj, const LONG& lWndWidth, const LONG& lWndHeight, const LONG& nImgWidth, const LONG& nImgHeight);
 
 	static void CALLBACK FileEndCallBack(long lPort, void* pUser);
 	static unsigned __stdcall PlanNextFile(void* pParam);
 	CCritSec	m_PlayFilesLock;
-#ifdef UNICODE
-	std::list<std::wstring>	m_aryPlayFiles;
-#else
-	std::list<std::string>	m_aryPlayFiles;
-#endif
+
+	std::list<tstring>	m_aryPlayFiles;
+
 
 	CHAR m_meta[10*1024];
 	CHAR m_buffer[MAX_FRAME_LENGTH];
@@ -377,7 +304,6 @@ private:
 	DWORD		m_dwHeadSize;
 
 	LONG maxTime;
-
 public:
 	std::auto_ptr<CLoginDvrMgr>	m_spDVRLoginMgr;
 	std::auto_ptr<CHWndManager>	m_spHWndMgr;

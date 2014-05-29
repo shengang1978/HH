@@ -219,6 +219,8 @@ copy .\public\msxml4.dll $(TargetDir)</Command>
     <ClCompile Include="private\DVR\DVRPlayer.cpp" />
     <ClCompile Include="private\DVR\DVRSettings.cpp" />
     <ClCompile Include="private\DVR\FileStreamParser.cpp" />
+    <ClCompile Include="private\DVR\HHFrameDraw.cpp" />
+    <ClCompile Include="private\DVR\HHPlayerAdapter.cpp" />
     <ClCompile Include="private\DVR\HWndManager.cpp" />
     <ClCompile Include="private\DVR\LoginDvr.cpp" />
     <ClCompile Include="private\DVR\LoginDvrMgr.cpp" />
@@ -269,6 +271,8 @@ copy .\public\msxml4.dll $(TargetDir)</Command>
     <ClInclude Include="private\DVR\DVRPlayer.h" />
     <ClInclude Include="private\DVR\DVRSettings.h" />
     <ClInclude Include="private\DVR\FileStreamParser.h" />
+    <ClInclude Include="private\DVR\HHFrameDraw.h" />
+    <ClInclude Include="private\DVR\HHPlayerAdapter.h" />
     <ClInclude Include="private\DVR\HWndManager.h" />
     <ClInclude Include="private\DVR\LoginDvr.h" />
     <ClInclude Include="private\DVR\LoginDvrMgr.h" />

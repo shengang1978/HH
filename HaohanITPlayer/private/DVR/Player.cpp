@@ -15,7 +15,7 @@
 #include "DVRPlayer.h"
 #include <stdio.h>
 #include "TraceLog.h"
-
+#include "HHFrameDraw.h"
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -1105,7 +1105,7 @@ void CALLBACK CPlayer::MP4SDKDrawFun(long nPort,HDC hDc,LONG nUser)
 		for (HHV::FrameMetaDataList::const_iterator it = scaledMetaData.begin(); it != scaledMetaData.end(); ++it)
 		{
 			// Now, let's draw the meta data.
-			CDVRPlayer::DrawFrameMetaData(graphics, *it, renderWndWidth, renderWndHeight);
+			HHFrameMetadataHelper().DrawFrameMetaData(graphics, *it, renderWndWidth, renderWndHeight);
 		}
 	}
 }
@@ -1152,7 +1152,7 @@ void CALLBACK CPlayer::OnDrawFun(long nPort, HDC hDc, LONG nUser)
 
 		for (HHV::FrameMetaDataList::const_iterator it = scaledMetaData.begin(); it != scaledMetaData.end(); ++it)
 		{
-			CDVRPlayer::DrawFrameMetaData(graphics, *it, renderWndWidth, renderWndHeight);
+			HHFrameMetadataHelper().DrawFrameMetaData(graphics, *it, renderWndWidth, renderWndHeight);
 		}
 	}
 
